@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Critical! - 3D DnD Roller</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <canvas id="bg"></canvas>
+
+    <div id="ui-container">
+        <h1>3D Dice Roller</h1>
+        <div id="dice-buttons">
+            <button class="dice-btn" data-dice="d4">Roll d4</button>
+            <button class="dice-btn" data-dice="d6">Roll d6</button>
+            <button class="dice-btn" data-dice="d8">Roll d8</button>
+            <button class="dice-btn" data-dice="d10">Roll d10</button>
+            <button class="dice-btn" data-dice="d12">Roll d12</button>
+            <button class="dice-btn" data-dice="d20">Roll d20</button>
+        </div>
+        <div id="result-container">
+            <h2>Result: <span id="result">0</span></h2>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

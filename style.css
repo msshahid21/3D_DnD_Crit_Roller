@@ -1,0 +1,53 @@
+/* Basic reset and font styling */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+    background-color: #1a1a1a;
+}
+
+/* This makes the canvas fill the entire background */
+#bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Puts the canvas behind other content */
+}
+
+/* Container for all the UI elements */
+#ui-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+/* Styling for the buttons */
+.dice-btn {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    border: 2px solid white;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.dice-btn:hover {
+    background-color: white;
+    color: black;
+}
+
+/* Styling for the result display */
+#result-container {
+    margin-top: 20px;
+}
+
+#result {
+    font-weight: bold;
+    font-size: 2em;
+}
