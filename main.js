@@ -1,28 +1,51 @@
 // =========== IMPORTS ===========
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // =========== SET UP THE SCENE, CAMERA, AND RENDERER ===========
 // Container for 3D Objects
 const scene = new THREE.Scene();
 
 // Camera
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 15; // Move the camera back so we can see the objects
-camera.position.y = 5;
+const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 12; // Move the camera back so we can see the objects
+camera.position.y = 20;
+camera.rotation.x = -1;
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#bg'), // Link canvas ID
   antialias: true // Smoothens the edges of objects
 });
+
 renderer.setSize(window.innerWidth, window.innerHeight); // Set renderer to full screen
 renderer.setPixelRatio(window.devicePixelRatio, 2); // Use device's pixel ratio
+renderer.shadowMap.enabled = true; // Enable shadows
 
+// Orbital Controls
+// const controls = new OrbitControls(camera, renderer.domElement);
+// controls.enableDamping = true; // Makes the controls feel smoother
 
 // =========== SET UP PHYSICS ===========
 const world = new CANNON.World();
 world.gravity.set(0, -9.8, 0); // Set gravity
+
+// =========== MATERIALS ===========
+const groundMaterial = new CANNON.Material('ground');
+const diceMaterial = new CANNON.Material('dice');
+
+// Define the interaction between the two materials
+const contactMaterial = new CANNON.ContactMaterial(
+    groundMaterial,
+    diceMaterial,
+    {
+        friction: 0.1,    // How much friction is between the dice and the ground
+        restitution: 0.5  // How much the dice will bounce
+    }
+);
+world.addContactMaterial(contactMaterial);
+
 
 // =========== CREATE OBJECTS ===========
 // Array to track objects to update
@@ -38,7 +61,7 @@ const icosahedronMesh = new THREE.Mesh(icosahedronGeometry, icosahedronMaterial)
 scene.add(icosahedronMesh);
 
 // --- Physics ---
-const icosahedronShape = new CANNON.Sphere(2); // Half of the geometry's size
+const icosahedronShape = new CANNON.Sphere(1); // Half of the geometry's size
 const icosahedronBody = new CANNON.Body({
     mass: 1, // (0 = Static Object, 1 = Dynamic Object)
     shape: icosahedronShape,
@@ -49,9 +72,9 @@ world.addBody(icosahedronBody);
 // Add icosahedron to list of objects to update
 objectsToUpdate.push({ mesh: icosahedronMesh, body: icosahedronBody });
 
-// ---- The Floor ----
+// ---- The Box ----
 // --- Geometry ---
-const planeGeometry = new THREE.PlaneGeometry(25, 25);
+const planeGeometry = new THREE.PlaneGeometry(50, 30);
 
 // --- Material & Mesh ---
 const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x888888 });
@@ -63,7 +86,8 @@ scene.add(planeMesh);
 const planeShape = new CANNON.Plane();
 const planeBody = new CANNON.Body({
     mass: 0,
-    shape: planeShape
+    shape: planeShape,
+    position: new CANNON.Vec3(0, 0, 0)
 });
 
 // Rotate the physics plane to match the visual one
@@ -100,12 +124,21 @@ const tick = () => {
         object.mesh.quaternion.copy(object.body.quaternion);
     }
     
+    // controls.update();
+
     // --- Render the Scene ---
     renderer.render(scene, camera);
 
     // --- Call tick again on the next frame ---
     window.requestAnimationFrame(tick);
 };
+
+// Camera position capture
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'p') { // Press 'p' to print
+        console.log('Camera Position:', camera.position);
+    }
+});
 
 // Start the animation loop!
 tick();
